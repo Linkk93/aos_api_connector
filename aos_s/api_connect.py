@@ -19,7 +19,7 @@ def login(api_url, api_user=None, api_pw=None):
         exit(-1)
 
 
-def logout(api_user='admin', **session_dict):
+def logout(api_user, **session_dict):
     target_url = session_dict['url'] + "login-sessions"
     header = {"SessionId": session_dict["cookie"]}
     data = json.dumps({'userName': api_user})

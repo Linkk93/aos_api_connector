@@ -35,7 +35,7 @@ class AOSSwitchAPIClient(object):
             print(f'Ran into exception: {error}. Logging out..')
 
     def disconnect(self):
-        self.response = api_connect.logout(**self.session_dict)
+        self.response = api_connect.logout(self.username, **self.session_dict)
         return self.response
 
     def _save(self, out_data, out_file):

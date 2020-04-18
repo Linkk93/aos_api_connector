@@ -4,7 +4,7 @@ import json
 
 
 def main_s():
-    load_file = 'example/switchdata_s.json'
+    load_file = 'switchdata_s.json'
     with open(load_file, 'r') as f:
         data = json.load(f)
     aos_test = AOSSwitchAPIClient(**data)
@@ -15,7 +15,7 @@ def main_s():
 
 
 def main_cx():
-    load_file = 'example/switchdata_cx.json'
+    load_file = 'switchdata_cx.json'
     with open(load_file, 'r') as f:
         data = json.load(f)
     aocx_test = AOSCXAPIClient(**data)
@@ -27,4 +27,4 @@ def main_cx():
 
 if __name__ == '__main__':
     main_s()
-    main_cx()
+    # main_cx()
