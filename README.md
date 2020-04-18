@@ -27,6 +27,10 @@ After creating the device, use connect() to create a session.
 Then use the other functions to use the API. 
 When you are finished use disconnect() to logout. 
 
+#### Please note that there is no syntax check!
+Some parameters are case sensitive. 
+For example, api_version, there is no check for "V7" or "v7", but only "v7" will work.
+
 ### Examples
 Examples can be found in the example folder.
 
