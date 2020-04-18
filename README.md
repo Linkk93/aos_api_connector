@@ -18,7 +18,7 @@ Every type of API has an API caller class. You can create instances of that clas
 data = { "url": "172.16.78.65",
   "username": "admin",
   "password": "Aruba123",
-  "api_version": "v7"
+  "api_version": "v10.04"
 }
 aocx_test = AOSCXAPIClient(**data)
 ```
