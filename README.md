@@ -38,4 +38,4 @@ So both classes have connect(), disconnect() or get_vlans() even if they are imp
 ## Roadmap
 
 I am working on implementing more functions and to create classes for the ClearPass and ArubaOS WLAN APIs.
-After that I will create workflows over different APIs.
+After that I will create workflows spanning different APIs.
