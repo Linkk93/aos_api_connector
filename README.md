@@ -18,7 +18,7 @@ Every type of API has an API caller class. You can create instances of that clas
 data = { "url": "172.16.78.65",
   "username": "admin",
   "password": "Aruba123",
-  "api_version": "v7"
+  "api_version": "v10.04"
 }
 aocx_test = AOSCXAPIClient(**data)
 ```
@@ -26,6 +26,10 @@ aocx_test = AOSCXAPIClient(**data)
 After creating the device, use connect() to create a session. 
 Then use the other functions to use the API. 
 When you are finished use disconnect() to logout. 
+
+#### Please note that there is no syntax check!
+Some parameters are case sensitive. 
+For example, api_version, there is no check for "V7" or "v7", but only "v7" will work.
 
 ### Examples
 Examples can be found in the example folder.
