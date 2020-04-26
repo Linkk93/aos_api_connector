@@ -16,14 +16,23 @@ Every type of API has an API caller class. You can create instances of that clas
 * Password
 * URL / IP / FQDN address of the device
 ```
+# get info
 data = { "url": "172.16.78.65",
   "username": "admin",
   "password": "Aruba123",
   "api_version": "v10.04"
-}
+
+
+# create Switch object
 aocx_test = AOSCXAPIClient(**data)
+
+# connect
+aocx_test.connect()
+# make calls
 sys_info = aocx_test.get_system_info()
+# work with data
 print(sys_info)
+# logout
 aocx_test.disconnect()
 ```
 
