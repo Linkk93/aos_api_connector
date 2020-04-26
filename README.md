@@ -6,6 +6,7 @@ API connector for ArubaOS products
 
 * ArubaOS-S Switches
 * ArubaOS-CX Switches
+* Aruba ClearPass
 
 
 ## Usage
