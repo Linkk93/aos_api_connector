@@ -22,6 +22,9 @@ data = { "url": "172.16.78.65",
   "api_version": "v10.04"
 }
 aocx_test = AOSCXAPIClient(**data)
+sys_info = aocx_test.get_system_info()
+print(sys_info)
+aocx_test.disconnect()
 ```
 
 After creating the device, use connect() to create a session. 
