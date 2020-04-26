@@ -21,11 +21,9 @@ data = { "url": "172.16.78.65",
   "username": "admin",
   "password": "Aruba123",
   "api_version": "v10.04"
-
-
+}
 # create Switch object
 aocx_test = AOSCXAPIClient(**data)
-
 # connect
 aocx_test.connect()
 # make calls
