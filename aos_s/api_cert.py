@@ -15,8 +15,7 @@ def encode64(decoded: str) -> str:
 
 def get_ta_profiles(**session_dict):
     target_url = session_dict['url'] + 'ta_profiles'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].get(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].get(target_url, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -26,9 +25,8 @@ def get_ta_profiles(**session_dict):
 
 def post_ta_profile(profile, **session_dict):
     target_url = session_dict['url'] + 'ta_profiles'
-    cookies = {'sessionId': session_dict["cookie"]}
     data = json.dumps(profile)
-    r = session_dict['s'].post(target_url, cookies=cookies, data=data, verify=False)
+    r = session_dict['s'].post(target_url, data=data, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -91,8 +89,7 @@ def generate_csr(subject_dict, cert_name, ca_name='Default', **session_dict):
                 "validity": csr_validity
             }
     data = json.dumps(csr_dict)
-    header = {"cookie": session_dict["cookie"]}
-    r = session_dict['s'].post(target_url, data=data, headers=header, verify=False)
+    r = session_dict['s'].post(target_url, data=data, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -102,8 +99,7 @@ def generate_csr(subject_dict, cert_name, ca_name='Default', **session_dict):
 
 def get_local(cert_name, **session_dict):
     target_url = session_dict['url'] + f'crypto_pki/local_certificate/{cert_name}'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].get(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].get(target_url, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -113,8 +109,7 @@ def get_local(cert_name, **session_dict):
 
 def delete_cert(cert_name, **session_dict):
     target_url = session_dict['url'] + f'crypto_pki/local_certificate/{cert_name}'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].delete(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].delete(target_url, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -124,9 +119,8 @@ def delete_cert(cert_name, **session_dict):
 
 def post_signed(cert, **session_dict):
     target_url = session_dict['url'] + 'crypto_pki/install_signed_certificate'
-    cookies = {'sessionId': session_dict["cookie"]}
     data = json.dumps({"signed_certificate_base64_encoded_pem": cert})
-    r = session_dict['s'].post(target_url, cookies=cookies, data=data, verify=False)
+    r = session_dict['s'].post(target_url, data=data, verify=False)
     if r.ok:
         return r.json()
     else:

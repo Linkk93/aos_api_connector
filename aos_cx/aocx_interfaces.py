@@ -5,7 +5,7 @@ def get_interfaces(depth=1, **kwargs):
         return r.json()
     else:
         print(f"HTTP Code: {r.status_code} \n  {r.reason} \n Message {r.text}")
-        return {}
+        return r
 
 
 def get_lldp(interface: str, attributes='mac_addr,port_id,chassis_id,neighbor_info', depth=2, **kwargs):
@@ -16,6 +16,6 @@ def get_lldp(interface: str, attributes='mac_addr,port_id,chassis_id,neighbor_in
         return r.json()
     else:
         print(f"HTTP Code: {r.status_code} \n  {r.reason} \n Message {r.text}")
-        return {}
+        return r
 
 

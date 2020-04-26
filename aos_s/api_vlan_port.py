@@ -3,8 +3,7 @@ import json
 
 def get_vlan_ports(**session_dict):
     target_url = session_dict['url'] + 'vlans-ports'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].get(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].get(target_url, verify=False)
     if r.ok:
         return r.json()['vlan_port_element']
     else:
@@ -19,9 +18,8 @@ def post_vlan_port(vlan_id: int, port_id: str, mode: str = 'POM_TAGGED_STATIC', 
         'port_mode': mode
     }
     target_url = session_dict['url'] + 'vlans-ports'
-    cookies = {'sessionId': session_dict["cookie"]}
     data = json.dumps(vlan)
-    r = session_dict['s'].post(target_url, cookies=cookies, data=data, verify=False)
+    r = session_dict['s'].post(target_url, data=data, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -36,9 +34,8 @@ def put_vlan_port(vlan_id: int, port_id: str, mode: str = 'POM_TAGGED_STATIC', *
         'port_mode': mode
     }
     target_url = session_dict['url'] + 'vlans-ports'
-    cookies = {'sessionId': session_dict["cookie"]}
     data = json.dumps(vlan)
-    r = session_dict['s'].put(target_url, cookies=cookies, data=data, verify=False)
+    r = session_dict['s'].put(target_url, data=data, verify=False)
     if r.ok:
         return r.json()
     else:

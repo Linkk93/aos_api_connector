@@ -1,4 +1,32 @@
-from aos_s import api_connect, api_cert, api_system, api_vlan, api_vlan_port
+from aos_s import api_connect, api_cert, api_system, api_vlan, api_vlan_port, api_radius, api_snmpv3, api_ntp, api_timesync
+
+
+def create_vlan_table(vlan_port_dict: dict):
+    int_dict = {}
+    for vlan_port in vlan_port_dict:
+        # is interface new?
+        if vlan_port['port_id'] not in int_dict.keys():
+            int_dict[vlan_port['port_id']] = {'untagged': [], 'tagged': [], 'forbidden': []}
+
+        if vlan_port['port_mode'] == 'POM_UNTAGGED':
+            untag_list = int_dict[vlan_port['port_id']]['untagged']
+            untag_list.append(vlan_port['vlan_id'])
+            int_dict[vlan_port['port_id']]['untagged'] = untag_list
+        elif vlan_port['port_mode'] == 'POM_TAGGED_STATIC':
+            tag_list = int_dict[vlan_port['port_id']]['tagged']
+            tag_list.append(vlan_port['vlan_id'])
+            int_dict[vlan_port['port_id']]['tagged'] = tag_list
+        elif vlan_port['port_mode'] == 'POM_FORBIDDEN':
+            forbid_list = int_dict[vlan_port['port_id']]['forbidden']
+            forbid_list.append(vlan_port['vlan_id'])
+            int_dict[vlan_port['port_id']]['forbidden'] = forbid_list
+    return int_dict
+
+
+def _save(out_data, out_file):
+    # write to file
+    with open(out_file, 'w+') as file:
+        file.write(str(out_data))
 
 
 class AOSSwitchAPIClient(object):
@@ -26,22 +54,19 @@ class AOSSwitchAPIClient(object):
         self.session = None
         self.response = None
         self.system_info = None
+        self.vlan_info = None
 
     def connect(self):
         try:
             self.session = api_connect.login(self.base_url, self.username, self.password)
             self.session_dict = dict(s=self.session['s'], cookie=self.session['cookie'], url=self.base_url, ip=self.url)
         except Exception as error:
-            print(f'Ran into exception: {error}. Logging out..')
+            print(f'Ran into exception: {error}.')
+            raise error
 
     def disconnect(self):
         self.response = api_connect.logout(self.username, **self.session_dict)
         return self.response
-
-    def _save(self, out_data, out_file):
-        # write to file
-        with open(out_file, 'w+') as file:
-            file.write(str(out_data))
 
     def get_ta_profile(self):
         self.response = api_cert.get_ta_profiles(**self.session_dict)
@@ -99,9 +124,9 @@ class AOSSwitchAPIClient(object):
             ta_name: existend TA / CA on the switch, with which the certificate will be signed
         """
         csr = api_cert.generate_csr(subject_dict, cert_name, ta_name, **self.session_dict)
-        self._save(csr, f'pki/json/{cert_name}.json')
+        _save(csr, f'pki/json/{cert_name}.json')
         csr_decoded = api_cert.decode64(csr["certificate_detail_base64_encoded"])
-        self._save(csr_decoded, f'pki/csr/{cert_name}.csr')
+        _save(csr_decoded, f'pki/csr/{cert_name}.csr')
 
     def post_signed_cert(self, signed_file_path):
         with open(signed_file_path, 'r') as file:
@@ -121,32 +146,78 @@ class AOSSwitchAPIClient(object):
         return self.response
 
     def get_vlan_port(self):
-        vlan_ports = api_vlan_port.get_vlan_ports(**self.session_dict)
-        self.response = self.create_vlan_table(vlan_ports)
+        self.response = api_vlan_port.get_vlan_ports(**self.session_dict)
+        self.vlan_info = create_vlan_table(self.response)
         return self.response
 
     def get_system_info(self):
         self.system_info = api_system.get_system_info(**self.session_dict)
         self.system_info['ip'] = self.session_dict['ip']
+        self.system_info['hostname'] = self.system_info['name']
         return self.system_info
 
-    def create_vlan_table(self, vlan_port_dict: dict):
-        int_dict = {}
-        for vlan_port in vlan_port_dict:
-            # is interface new?
-            if vlan_port['port_id'] not in int_dict.keys():
-                int_dict[vlan_port['port_id']] = {'untagged': [], 'tagged': [], 'forbidden': []}
+    def new_radius_server(self, secret, address, auth_port=1812, acc_port=1813, **kwargs):
+        self.response = api_radius.new_server(secret, address, auth_port, acc_port, **self.session_dict)
+        return self.response
 
-            if vlan_port['port_mode'] == 'POM_UNTAGGED':
-                untag_list = int_dict[vlan_port['port_id']]['untagged']
-                untag_list.append(vlan_port['vlan_id'])
-                int_dict[vlan_port['port_id']]['untagged'] = untag_list
-            elif vlan_port['port_mode'] == 'POM_TAGGED_STATIC':
-                tag_list = int_dict[vlan_port['port_id']]['tagged']
-                tag_list.append(vlan_port['vlan_id'])
-                int_dict[vlan_port['port_id']]['tagged'] = tag_list
-            elif vlan_port['port_mode'] == 'POM_FORBIDDEN':
-                forbid_list = int_dict[vlan_port['port_id']]['forbidden']
-                forbid_list.append(vlan_port['vlan_id'])
-                int_dict[vlan_port['port_id']]['forbidden'] = forbid_list
-        return int_dict
+    def get_snmpv3_user(self):
+        self.response = api_snmpv3.get_users(**self.session_dict)
+        return self.response.json()
+
+    def new_snmpv3_user(self, username: str, auth_pw: str, priv_pw: str, auth_prot: str = "sha", priv_prot: str = "aes",
+                        v3_group: str = 'SGT_MANAGERPRIV', ):
+        self.response = api_snmpv3.post_user(username, auth_pw, priv_pw, auth_prot, priv_prot, v3_group,
+                                             **self.session_dict)
+        return self.response
+
+    def delete_snmpv3_user(self, username):
+        self.response = api_snmpv3.delete_user(username, **self.session_dict)
+        return self.response
+
+    def get_snmpv3_params(self):
+        self.response = api_snmpv3.get_params(**self.session_dict)
+        return self.response.json()
+
+    def new_snmpv3_params(self, name, username, sec_model="v3", message_model="v3", auth_type="priv"):
+        self.response = api_snmpv3.post_params(name, username, sec_model, message_model, auth_type, **self.session_dict)
+        return self.response
+
+    def delete_snmpv3_params(self, name):
+        self.response = api_snmpv3.delete_params(name, **self.session_dict)
+        return self.response
+
+    def enable_snmpv3(self):
+        self.response = api_snmpv3.put_snmpv3_global(True, **self.session_dict)
+        return self.response
+
+    def disable_snmpv3(self):
+        self.response = api_snmpv3.put_snmpv3_global(False, **self.session_dict)
+        return self.response
+
+    def get_ntp_global(self):
+        self.response = api_ntp.get_ntp_global(**self.session_dict)
+        return self.response.json()
+
+    def put_ntp_global(self, enable: bool, is_broadcast: bool = True, max_association=8):
+        self.response = api_ntp.put_ntp_global(enable, is_broadcast, max_association, **self.session_dict)
+        return self.response
+
+    def get_ntp_server(self, address=''):
+        self.response = api_ntp.get_ntp_server(address, **self.session_dict)
+        return self.response.json()
+
+    def delete_ntp_server(self, address):
+        self.response = api_ntp.delete_ntp_server(address, **self.session_dict)
+        return self.response
+
+    def new_ntp_server(self, address, min_pol=6, max_pol=10, is_burst=False, is_iburst=False, is_oobm=False):
+        self.response = api_ntp.post_ntp_server(address, min_pol, max_pol, is_burst, is_iburst, is_oobm, **self.session_dict)
+        return self.response
+
+    def get_timesynch(self):
+        self.response = api_timesync.get_timesynch(**self.session_dict)
+        return self.response.json()
+
+    def put_timesynch(self, sntp=False, timep=False, timep_or_sntp=True, ntp=False):
+        self.response = api_timesync.put_timesynch(sntp, timep, timep_or_sntp, ntp, **self.session_dict)
+        return self.response

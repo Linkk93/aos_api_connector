@@ -25,6 +25,23 @@ def main_cx():
     aocx_test.disconnect()
 
 
+def main_cppm():
+    load_file = 'json_cppm_data_pw.json'
+    with open(load_file, 'r') as f:
+        data = json.load(f)
+    cppm_test = CPPMAPIClient(**data)
+    cppm_test.connect()
+    nd_info = cppm_test.get_all_network_devices()
+    for nd in nd_info['_embedded']['items']:
+        print(f"Name: {nd['name']} \nIP: {nd['ip_address']} \n\n")
+
+    load_nd = 'json_nd_info.json'
+    with open(load_nd, 'r') as f:
+        nd_info = json.load(f)
+    r = cppm_test.post_nd(nd_info)
+    print(r)
+
+
 if __name__ == '__main__':
     main_s()
     # main_cx()

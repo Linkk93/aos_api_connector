@@ -43,7 +43,7 @@ def get_single_cert(cert_name, **kwargs):
         return r.json()
     else:
         print(f"HTTP Code: {r.status_code} \n  {r.reason} \n Message {r.text}")
-        return {}
+        return r
 
 
 def get_certs(depth=3, **kwargs):
@@ -53,7 +53,7 @@ def get_certs(depth=3, **kwargs):
         return r.json()
     else:
         print(f"HTTP Code: {r.status_code} \n  {r.reason} \n Message {r.text}")
-        return {}
+        return r
 
 
 def del_cert(cert_name, **kwargs):
@@ -63,7 +63,7 @@ def del_cert(cert_name, **kwargs):
         return r.content
     else:
         print(f"HTTP Code: {r.status_code} \n  {r.reason} \n Message {r.text}")
-        return {}
+        return r
 
 
 def put_cert(cert_name, cert_pem, **kwargs):
@@ -78,7 +78,7 @@ def put_cert(cert_name, cert_pem, **kwargs):
         return r.content
     else:
         print(f"HTTP Code: {r.status_code} \n  {r.reason} \n Message {r.text}")
-        return {}
+        return r
 
 
 def put_trust():

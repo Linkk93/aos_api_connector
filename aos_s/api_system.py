@@ -2,8 +2,7 @@
 
 def get_system(**session_dict):
     target_url = session_dict['url'] + 'system'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].get(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].get(target_url, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -13,8 +12,7 @@ def get_system(**session_dict):
 
 def get_system_info(**session_dict):
     target_url = session_dict['url'] + 'system/status'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].get(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].get(target_url, verify=False)
     if r.ok:
         return r.json()
     else:

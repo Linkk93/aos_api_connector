@@ -2,7 +2,7 @@ import os
 import json
 
 
-def temperature(attributes='temp_sensors', depth=3, **sesion_dict):
+def get_temperature(attributes='temp_sensors', depth=3, **sesion_dict):
     target_url = sesion_dict["url"] + f"system/subsystems/management_module,1%2F1?attributes={attributes}&depth={depth}"
     r = sesion_dict["s"].get(target_url, verify=False)
     if r.ok:
@@ -12,7 +12,7 @@ def temperature(attributes='temp_sensors', depth=3, **sesion_dict):
         return {}
 
 
-def subsystem_info(attributes='product_info,power_supplies,boot_time', ss_type='chassis,1', depth=3, **sesion_dict):
+def get_subsystem_info(attributes='product_info,power_supplies,boot_time', ss_type='chassis,1', depth=3, **sesion_dict):
     target_url = sesion_dict["url"] + f"system/subsystems/{ss_type}?attributes={attributes}&depth={depth}"
     r = sesion_dict["s"].get(target_url, verify=False)
     if r.ok:
@@ -22,7 +22,7 @@ def subsystem_info(attributes='product_info,power_supplies,boot_time', ss_type='
         return {}
 
 
-def systeminfo(attributes='hostname,software_version,mgmt_intf,system_mac', depth=0, **sesion_dict):
+def get_systeminfo(attributes='hostname,software_version,mgmt_intf,system_mac', depth=0, **sesion_dict):
     target_url = sesion_dict["url"] + "system?attributes={}&depth={}".format(attributes, depth)
     r = sesion_dict["s"].get(target_url, verify=False)
     if r.ok:
@@ -33,13 +33,13 @@ def systeminfo(attributes='hostname,software_version,mgmt_intf,system_mac', dept
 
 
 def get_system_info_all(**session_dict):
-    system_info = systeminfo(**session_dict)
-    sub_info = subsystem_info(**session_dict)
+    system_info = get_systeminfo(**session_dict)
+    sub_info = get_subsystem_info(**session_dict)
     merged_info = {**system_info, **sub_info['product_info'], 'boot_time': sub_info['boot_time']}
     return merged_info
 
 
-def version(**session_dict):
+def get_version(**session_dict):
     target_url = session_dict["url"] + "firmware"
     r = session_dict["s"].get(target_url, verify=False)
     if r.ok:

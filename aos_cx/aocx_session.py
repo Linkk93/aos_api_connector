@@ -31,13 +31,13 @@ def login(base_url, username=None, password=None) -> requests.Session:
         r = s.post(target_url, verify=False, timeout=5)
         if not r.ok:
             print(f"FAIL: Login failed with status code {r.status_code}")
-            exit(-1)
+            raise ConnectionError
         else:
             print("SUCCESS: Login succeeded")
             return s
     except requests.exceptions.ConnectTimeout:
         print('ERROR: Error connecting to host: connection attempt timed out.')
-        exit(-1)
+        raise TimeoutError
 
 
 def logout(**session_dict):

@@ -3,8 +3,7 @@ import json
 
 def get_all_vlan(**session_dict):
     target_url = session_dict['url'] + 'vlans'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].get(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].get(target_url, verify=False)
     if r.ok:
         return r.json()['vlan_element']
     else:
@@ -14,8 +13,7 @@ def get_all_vlan(**session_dict):
 
 def get_vlan(vlan_id, **session_dict):
     target_url = session_dict['url'] + f'vlans/{vlan_id}'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].get(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].get(target_url, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -35,9 +33,8 @@ def post_new_vlan(vlan_id: int, name: str, is_jumbo: bool = False, is_voice: boo
         "is_management_vlan": is_mgmt_vlan
     }
     target_url = session_dict['url'] + f'vlans'
-    cookies = {'sessionId': session_dict["cookie"]}
     data = json.dumps(vlan_dict)
-    r = session_dict['s'].post(target_url, cookies=cookies, data=data, verify=False)
+    r = session_dict['s'].post(target_url, data=data, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -57,9 +54,8 @@ def update_vlan(vlan_id: int, name='', is_jumbo: bool = False, is_voice: bool = 
         "is_management_vlan": is_mgmt_vlan
     }
     target_url = session_dict['url'] + f'vlans/{vlan_id}'
-    cookies = {'sessionId': session_dict["cookie"]}
     data = json.dumps(vlan_dict)
-    r = session_dict['s'].put(target_url, cookies=cookies, data=data, verify=False)
+    r = session_dict['s'].put(target_url, data=data, verify=False)
     if r.ok:
         return r.json()
     else:
@@ -69,8 +65,7 @@ def update_vlan(vlan_id: int, name='', is_jumbo: bool = False, is_voice: bool = 
 
 def delete_vlan(vlan_id: int, **session_dict):
     target_url = session_dict['url'] + f'vlans/{vlan_id}'
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].delete(target_url, cookies=cookies, verify=False)
+    r = session_dict['s'].delete(target_url, verify=False)
     if r.ok:
         return r.json()
     else:

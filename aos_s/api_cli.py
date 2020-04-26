@@ -8,9 +8,8 @@ def post_command(command: str, **session_dict):
     # Testmode commands are not supported. All show commands are supported except show tech and show history.
     command_dict = {"cmd": command}
     target_url = session_dict['url'] + f'cli'
-    cookies = {'sessionId': session_dict["cookie"]}
     data = json.dumps(command_dict)
-    r = session_dict['s'].post(target_url, cookies=cookies, data=data, verify=False)
+    r = session_dict['s'].post(target_url, data=data, verify=False)
     if r.ok:
         return r.json()
     else:

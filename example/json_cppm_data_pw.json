@@ -1,0 +1,8 @@
+{
+  "url": "10.10.10.10",
+  "api_version": "v1",
+  "client_id": "api_client_pw",
+  "grant_type": "password",
+  "username": "admin",
+  "password": "Aruba123"
+}

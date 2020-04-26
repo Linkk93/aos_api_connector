@@ -1,9 +1,7 @@
 
 
 def get_all(**session_dict):
-    print("Getting all LLDP neighbors")
-    cookies = {'sessionId': session_dict["cookie"]}
-    r = session_dict['s'].get(session_dict['url'] + "lldp/remote-device", cookies=cookies, verify=False)
+    r = session_dict['s'].get(session_dict['url'] + "lldp/remote-device", verify=False)
     if r.ok:
         return r.json()
     else:

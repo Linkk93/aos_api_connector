@@ -1,4 +1,4 @@
-from aos_cx import aocx_interfaces, aocx_cert, aocx_system, aocx_vlan, aocx_vrf, aocx_session
+from aos_cx import aocx_interfaces, aocx_cert, aocx_system, aocx_vlan, aocx_vrf, aocx_session, aocx_radius
 import json
 
 
@@ -15,7 +15,7 @@ class AOSCXAPIClient(object):
 
             * required
         """
-        self.api_version = kwargs.get('api_version', 'v7')
+        self.api_version = kwargs.get('api_version', 'v10.04')
         self.username = kwargs['username']
         self.password = kwargs['password']
         self.protocol = kwargs.get('protocol', 'https')
@@ -28,14 +28,16 @@ class AOSCXAPIClient(object):
         self.system_info = None
 
     def disconnect(self):
-        return aocx_session.logout(**self.session_dict)
+        self.response = aocx_session.logout(**self.session_dict)
+        return self.response
 
     def connect(self):
         try:
             self.session = aocx_session.login(self.base_url, self.username, self.password)
             self.session_dict = dict(s=self.session, url=self.base_url, ip=self.url)
         except Exception as error:
-            print(f'Ran into exception: {error}. Logging out..')
+            print(f'Ran into exception: {error}.')
+            raise error
 
     def backup_file(self, file_path, config: str):
         c = aocx_system.get_config(config, **self.session_dict)
@@ -43,28 +45,28 @@ class AOSCXAPIClient(object):
             json.dump(c, f)
 
     def put_config(self, config_path, config_name):
-        r = aocx_system.put_config(config_path, config_name, **self.session_dict)
-        return r
+        self.response = aocx_system.put_config(config_path, config_name, **self.session_dict)
+        return self.response
 
     def get_config(self, config_name):
-        r = aocx_system.get_config(config_name, **self.session_dict)
-        return r
+        self.response = aocx_system.get_config(config_name, **self.session_dict)
+        return self.response
 
     def get_vlans(self):
-        vlan_info = aocx_vlan.get_vlans(**self.session_dict)
-        return vlan_info
+        self.response = aocx_vlan.get_vlans(**self.session_dict)
+        return self.response
 
     def get_temperature(self):
-        temp_info = aocx_system.temperature(**self.session_dict)
-        return temp_info
+        self.response = aocx_system.get_temperature(**self.session_dict)
+        return self.response
 
     def get_interfaces(self):
-        interface_info = aocx_interfaces.get_interfaces(**self.session_dict)
-        return interface_info
+        self.response = aocx_interfaces.get_interfaces(**self.session_dict)
+        return self.response
 
     def get_int_lldp(self, interface):
-        lldp_dict = aocx_interfaces.get_lldp(interface, **self.session_dict)
-        return lldp_dict
+        self.response = aocx_interfaces.get_lldp(interface, **self.session_dict)
+        return self.response
 
     def new_csr(self, cert_dict):
         """
@@ -108,16 +110,24 @@ class AOSCXAPIClient(object):
     def get_system_info(self):
         system_info_dict = aocx_system.get_system_info_all(**self.session_dict)
         system_info_dict['ip'] = self.session_dict['ip']
-        return system_info_dict
+        self.system_info = system_info_dict
+        return self.system_info
 
     def get_subsystem_info(self):
-        subsystem_info = aocx_system.subsystem_info(**self.session_dict)
-        return subsystem_info
+        self.response = aocx_system.get_subsystem_info(**self.session_dict)
+        return self.response
 
     def get_version(self):
-        version_info = aocx_system.version(**self.session_dict)
-        return version_info
+        self.response = aocx_system.get_version(**self.session_dict)
+        return self.response
 
     def get_vrf_info(self):
-        vrf_info = aocx_vrf.get_vrf(**self.session_dict)
-        return vrf_info
+        self.response = aocx_vrf.get_vrf(**self.session_dict)
+        return self.response
+
+    def new_radius_server(self, secret, address, auth_port=1812, acc_port=1813, vrf_name='default', group='radius',
+                          default_group_prio: int = 1, **kwargs):
+        # use ArubaOS-S RADIUS server info JSON and convert
+        self.response = aocx_radius.post_radius_server(secret, address, auth_port, acc_port, vrf_name, group,
+                                                       default_group_prio, **self.session_dict)
+        return self.response
