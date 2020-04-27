@@ -1,4 +1,4 @@
-from cppm import cppm_session, network_device
+from ..cppm import cppm_session, network_device
 
 
 class CPPMAPIClient(object):

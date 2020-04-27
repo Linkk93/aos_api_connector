@@ -1,4 +1,4 @@
-from aos_s import api_connect, api_cert, api_system, api_vlan, api_vlan_port, api_radius, api_snmpv3, api_ntp, api_timesync
+from ..aos_s import api_connect, api_cert, api_system, api_vlan, api_vlan_port, api_radius, api_snmpv3, api_ntp, api_timesync
 
 
 def create_vlan_table(vlan_port_dict: dict):

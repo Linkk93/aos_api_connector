@@ -1,3 +1,4 @@
+
 # aos_api_connector
 API connector for ArubaOS products
 
@@ -8,6 +9,12 @@ API connector for ArubaOS products
 * ArubaOS-CX Switches
 * Aruba ClearPass
 
+## Installation
+Install through [pypi]([https://pypi.org/project/aos-api-connector/](https://pypi.org/project/aos-api-connector/)) via pip:
+````
+pip install aos-api-connector
+````
+Or manually using the [GitHub]([https://github.com/Linkk93/aos_api_connector](https://github.com/Linkk93/aos_api_connector)).
 
 ## Usage
 
@@ -15,35 +22,72 @@ Every type of API has an API caller class. You can create instances of that clas
 * Username
 * Password
 * URL / IP / FQDN address of the device
-```
-# get info
-data = { "url": "172.16.78.65",
-  "username": "admin",
-  "password": "Aruba123",
-  "api_version": "v10.04"
-}
-# create Switch object
-aocx_test = AOSCXAPIClient(**data)
-# connect
-aocx_test.connect()
-# make calls
-sys_info = aocx_test.get_system_info()
-# work with data
-print(sys_info)
-# logout
-aocx_test.disconnect()
-```
 
 After creating the device, use connect() to create a session. 
 Then use the other functions to use the API. 
 When you are finished use disconnect() to logout. 
 
+### AurubaOS-S Switch
+```
+from aos_api_connector.aos_s import aos_api_caller as aos_s
+
+
+data = { "url": "172.16.78.65",
+  "username": "admin",
+  "password": "Aruba123",
+  "api_version": "v7"
+}
+switch = aos_s.AOSSwitchAPIClient(**data)
+switch.connect()
+sys_info = switch.get_system_info()
+print(sys_info)
+switch.disconnect()
+```
+
+### ArubaOS-CX
+```
+from aos_api_connector.aos_cx import aoscx_api_caller as aos_cx
+
+
+data = { "url": "172.16.78.65",
+  "username": "admin",
+  "password": "Aruba123",
+  "api_version": "v10.04"
+}
+switch = aos_cx.AOSCXwitchAPIClient(**data)
+switch.connect()
+sys_info = switch.get_system_info()
+print(sys_info)
+switch.disconnect()
+```
+
+### ClearPass
+ClearPass neds either an API token or a username password.  That has to be set during instantiation of the API caller class.
+You can choose with which you want to login, look into example folder for more info.
+
+````
+from  aos_api_connector.cppm import cppm_api_caller as cppm
+
+
+data = {  
+	"url": "10.10.10.10",  
+	"api_version": "v1",  
+	"client_id": "api_client",  
+	"grant_type": "client_credentials",  
+	"client_secret": "lTOcISWlXzDV3HCZLT8CVJlN9zxrUirdP+gHpva4mWZ5"  
+	}
+cppm_test = cppm.CPPMAPIClient(**data)
+cppm_test.connect()  
+nd_info = cppm_test.get_all_network_devices()  
+for nd in nd_info['_embedded']['items']:  
+    print(f"Name: {nd['name']} \nIP: {nd['ip_address']} \n\n")
+````
+
+
 #### Please note that there is no syntax check!
 Some parameters are case sensitive. 
 For example, api_version, there is no check for "V7" or "v7", but only "v7" will work.
 
-### Examples
-Examples can be found in the example folder.
 
 ### Differences between classes
 

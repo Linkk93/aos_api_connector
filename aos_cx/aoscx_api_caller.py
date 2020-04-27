@@ -1,4 +1,4 @@
-from aos_cx import aocx_interfaces, aocx_cert, aocx_system, aocx_vlan, aocx_vrf, aocx_session, aocx_radius
+from ..aos_cx import aocx_interfaces, aocx_cert, aocx_system, aocx_vlan, aocx_vrf, aocx_session, aocx_radius
 import json
 
 

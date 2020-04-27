@@ -1,5 +1,6 @@
-from aos_api_caller import AOSSwitchAPIClient
-from aoscx_api_caller import AOSCXAPIClient
+from aos_s.aos_api_caller import AOSSwitchAPIClient
+from aos_cx.aoscx_api_caller import AOSCXAPIClient
+from cppm.cppm_api_caller import  CPPMAPIClient
 import json
 
 
