@@ -1,0 +1,10 @@
+{
+  "description":  "api_switch_01",
+  "name":  "Switch_2540",
+  "ip_address":  "172.16.78.65",
+  "radius_secret":  "Aruba123",
+  "tacacs_secret": "",
+  "vendor_name":  "Aruba",
+  "coa_capable":  true,
+  "coa_port":  3799
+}
