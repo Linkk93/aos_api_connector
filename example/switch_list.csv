@@ -1,0 +1,3 @@
+url,username,password,api_version,is_cx
+172.16.66.5,admin,install.1,v10.04,True
+172.16.78.65,admin,install.1,v7,False

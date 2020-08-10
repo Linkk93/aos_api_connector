@@ -73,39 +73,6 @@ class AOSSwitchAPIClient(object):
         return self.response
 
     def install_ta_profile(self, ta_profile):
-        # Example
-        # example_ca_cert =
-        """-----BEGIN CERTIFICATE-----
-        MIIDlTCCAn2gAwIBAgIQMgtXkI1Gj79IP/hQ/QgJqDANBgkqhkiG9w0BAQ0FADBd
-        MRUwEwYKCZImiZPyLGQBGRYFbG9jYWwxHjAcBgoJkiaJk/IsZAEZFg5nYWxsaXNj
-        aGVzZG9yZjEkMCIGA1UEAxMbZ2FsbGlzY2hlc2RvcmYtTEFCU0VSVkVSLUNBMB4X
-        DTE2MTEwMjE2MzkyNVoXDTI2MTEwMjE2NDkyNFowXTEVMBMGCgmSJomT8ixkARkW
-        BWxvY2FsMR4wHAYKCZImiZPyLGQBGRYOZ2FsbGlzY2hlc2RvcmYxJDAiBgNVBAMT
-        G2dhbGxpc2NoZXNkb3JmLUxBQlNFUlZFUi1DQTCCASIwDQYJKoZIhvcNAQEBBQAD
-        ggEPADCCAQoCggEBAN7LN8ZSWS7anCppVnrEAGXZg9IMxWj4/mzzrPN9rJvQ0VvM
-        +eP4B9h6YYKPusM4fsDFgtL1mzFe/X+d/tDC+yNMeJqij5enEQOEZd2iM8k9l/Wc
-        jkfqO3xcTk2v/ZWyuPJx9NSN/3Ib/RfFsS8VTQdbmUvVoFc8NqoHrvMm8cbILKU6
-        Ql6z3aG1m/3hJSWQSiJa8PC2w6azPiF9ueslHKGh30gPq8N6yCQg1FFJA/lqQrPS
-        geJdBIt31Lf/gcfCxY/p4/nF2DfG/lFCR/SoNgRAOVJKfx7HabRt2JOtPPDJo7jd
-        w84M03U7eXKzhPzhmn1VIr9AlLc0i9v3w4bHMCcCAwEAAaNRME8wCwYDVR0PBAQD
-        AgGGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFIWssVZFpHds3gfwzF9ZOKZy
-        ymAVMBAGCSsGAQQBgjcVAQQDAgEAMA0GCSqGSIb3DQEBDQUAA4IBAQBD6UvJiHqL
-        5zxSkScf01koSN69qFe+NCa94IHIMRtwXh/OVtecfZZbVZmwXoLzA0EJLhdtSyXt
-        6Fnvca/9QLhNCnPsPH3wcoqfaCu4OXLhlMABTiPq5Q2WYQKRougzXhljC6MTMgEE
-        n+4yuEA7RoK2TzLkaIkDFiGsKt0/0kjq1JNvvAWaw4PwziCeaT4KR3gvTjKkPypZ
-        Rt2jijBe8Uf03lvC/gb5BC4ibEo/ylYoJm5bu/yY8802DGTqzk4JmvaBb0MMRSsl
-        Yc+IyB1SINArLD4jtoYYeDZadgQUcu9sNJyFaZxT3w2lmsYgQ5hc3MPCpyy/5NI5
-        uEqKFsAOZjR/
-        -----END CERTIFICATE-----
-        """
-
-        """
-        example_ta_profile = {
-            "ta_name": 'gallischesdorf-LABSERVER-CA',
-            "ta_certificate_base64_encoded_pem": api_cert.encode64(example_ca_cert)
-        }
-        """
-
         ta_response = api_cert.post_ta_profile(ta_profile, **self.session_dict)
         return ta_response
 
