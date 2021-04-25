@@ -4,6 +4,7 @@ from cppm.cppm_api_caller import CPPMAPIClient
 from example import common_ops
 import json
 
+
 def main_s():
     load_file = 'json_switchdata_s.json'
     with open(load_file, 'r') as f:

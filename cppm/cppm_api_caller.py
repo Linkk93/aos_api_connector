@@ -1,4 +1,5 @@
-from ..cppm import cppm_session, network_device
+from cppm import cppm_session, network_device, cppm_enforcement, guest, xml_helper
+import json
 
 
 class CPPMAPIClient(object):
@@ -41,7 +42,15 @@ class CPPMAPIClient(object):
             self.password = kwargs['password']
             self.client_secret = kwargs.get('client_secret', None)
 
-    def connect(self):
+        self.tips_url = f'{self.protocol}://{self.url}/tipsapi/'
+        self.tips_user = kwargs.get('tips_user', None)
+        self.tips_pw = kwargs.get('tips_pw', None)
+        self.tips_session_dict = {
+            'username': self.tips_user,
+            'password': self.tips_pw,
+        }
+
+    def connect_api(self):
         try:
             if self.grant_type == 'client_credentials':
                 connection = cppm_session.login_credentials(self.base_url, self.client_id, self.client_secret)
@@ -55,10 +64,30 @@ class CPPMAPIClient(object):
         except Exception as error:
             print(f'Ran into exception: {error}.')
 
+    def connect_tips(self):
+        try:
+            self.tips_session_dict.update(cppm_session.login_tips(self.tips_url, self.tips_user, self.tips_pw))
+            self.tips_session_dict['url'] = self.tips_url
+        except Exception as error:
+            print(f'Ran into exception: {error}.')
+
     def get_all_network_devices(self):
         self.response = network_device.get_all_nd(**self.session_dict)
-        return self.response
+        return json.dumps(self.response.content.decode('UTF-8'))
 
-    def post_nd(self, nd_info):
+    def post_network_devices(self, nd_info):
         self.response = network_device.post_new_nd(nd_info, **self.session_dict)
+        return json.dumps(self.response.content.decode('UTF-8'))
+
+    def get_enf_profile(self):
+        self.response = cppm_enforcement.get_enf_profile(**self.tips_session_dict)
+        return xml_helper.xml_to_dict(self.response.content)
+
+    def create_guest(self, expiration_after=8):
+        new_guest = guest.create_guest(**self.session_dict).json()
+        self.response = guest.update_guest_expiration(new_guest['id'], expiration_after, **self.session_dict)
+        return self.response.json()
+
+    def get_guest_receipt(self, guest_id, receipt_id=5):
+        self.response = guest.get_receipt(guest_id, receipt_id, **self.session_dict)
         return self.response
