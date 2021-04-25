@@ -1,0 +1,11 @@
+{
+  "address": "192.168.87.31",
+  "secret": "Aruba123",
+  "auth_port": 1812,
+  "acc_port": 1813,
+  "is_dyn_authorization_enabled": true,
+  "is_oobm": false,
+  "vrf_name": "default",
+  "group": "radius",
+  "default_group_prio": 1
+}
